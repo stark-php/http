@@ -8,6 +8,11 @@
             "email": "christopher.rolfe198@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Stark\\Http\\": "lib/"
+        }
+    },
     "require": {
         "stark/contracts": "dev-master"
     },

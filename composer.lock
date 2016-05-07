@@ -4,17 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1d181b8b0729c6a0ec3c94d18c78794d",
-    "content-hash": "ac9acd701c6d2ee790d19d9815001229",
+    "hash": "3b6c77dba1055bf501e6827cc6725759",
+    "content-hash": "fc9221770e78d316d67f8eadcfd8264f",
     "packages": [
         {
             "name": "stark/contracts",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stark-php/contracts.git",
+                "reference": "56a932b0eea1c1653202e85afc1163d170c8334a"
+            },
             "dist": {
-                "type": "path",
-                "url": "../contracts",
+                "type": "zip",
+                "url": "https://api.github.com/repos/stark-php/contracts/zipball/56a932b0eea1c1653202e85afc1163d170c8334a",
                 "reference": "56a932b0eea1c1653202e85afc1163d170c8334a",
-                "shasum": null
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -22,6 +27,7 @@
                     "Stark\\Contracts\\": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -31,7 +37,8 @@
                     "email": "christopher.rolfe198@gmail.com"
                 }
             ],
-            "description": "The interfaces for the Stark project"
+            "description": "The interfaces for the Stark project",
+            "time": "2016-05-06 18:05:44"
         }
     ],
     "packages-dev": [

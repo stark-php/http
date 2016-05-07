@@ -8,5 +8,16 @@
             "email": "christopher.rolfe198@gmail.com"
         }
     ],
-    "require": {}
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../contracts"
+        }
+    ],
+    "require": {
+        "stark/contracts": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.3.*"
+    }
 }

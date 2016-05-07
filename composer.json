@@ -14,7 +14,8 @@
         }
     },
     "require": {
-        "stark/contracts": "dev-master"
+        "stark/contracts": "dev-master",
+        "stark/http-message": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "5.3.*"

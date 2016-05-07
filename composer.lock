@@ -4,12 +4,17 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1d181b8b0729c6a0ec3c94d18c78794d",
-    "content-hash": "ac9acd701c6d2ee790d19d9815001229",
+    "hash": "ebfe6d65800b54aeaf68666f130b6def",
+    "content-hash": "461a41e34d62ba969ad1a231fab92039",
     "packages": [
         {
             "name": "stark/contracts",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stark-php/contracts.git",
+                "reference": "56a932b0eea1c1653202e85afc1163d170c8334a"
+            },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/stark-php/contracts/zipball/56a932b0eea1c1653202e85afc1163d170c8334a",
@@ -34,6 +39,51 @@
             ],
             "description": "The interfaces for the Stark project",
             "time": "2016-05-06 18:05:44"
+        },
+        {
+            "name": "stark/http-message",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stark-php/http-message.git",
+                "reference": "96269292452a6d4e3c058807993741b9c26beaba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stark-php/http-message/zipball/96269292452a6d4e3c058807993741b9c26beaba",
+                "reference": "96269292452a6d4e3c058807993741b9c26beaba",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stark\\Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                },
+                {
+                    "name": "Christopher Rolfe",
+                    "email": "christopher.rolfe198@gmail.com"
+                }
+            ],
+            "description": "Common interfaces for HTTP messages upgraded to PHP7",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-05-06 23:44:06"
         }
     ],
     "packages-dev": [
@@ -1181,7 +1231,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "stark/contracts": 20
+        "stark/contracts": 20,
+        "stark/http-message": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

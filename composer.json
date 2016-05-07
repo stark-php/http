@@ -1,0 +1,12 @@
+{
+    "name": "stark/http",
+    "description": "The HTTP module for the Stark project, this is an implementation of PSR-7",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christopher Rolfe",
+            "email": "christopher.rolfe198@gmail.com"
+        }
+    ],
+    "require": {}
+}

@@ -2,7 +2,7 @@
 
 use Stark\Http\Messages\Request;
 
-class RouterTest extends PHPUnit_Framework_TestCase
+class RequestTest extends PHPUnit_Framework_TestCase
 {
     public function testWeCanGetTrueFromAMethod()
     {

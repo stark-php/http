@@ -6,10 +6,23 @@ use OutOfBoundsException;
 class Message implements MessageInterface
 {
     protected $protocol_version;
+    protected $headers = [];
 
     public function __construct()
     {
-        $this->protocol_version = floatval(ltrim($_SERVER['SERVER_PROTOCOL'], 'HTTP/'));
+        if (isset($_SERVER['SERVER_PROTOCOL'])) {
+            $this->protocol_version = floatval(ltrim($_SERVER['SERVER_PROTOCOL'], 'HTTP/'));
+        } else {
+            $this->protocol_version = '';
+        }
+
+        var_dump(headers_list());
+
+        foreach (headers_list() as $header) {
+            preg_match("/^([^:]*):[ ]?(.*)/", $header, $matches);
+
+            $this->headers[$matches[1]] = $matches[2];
+        }
     }
 
     public function getProtocolVersion(): string

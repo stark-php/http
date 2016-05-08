@@ -16,13 +16,17 @@ class Message implements MessageInterface
             $this->protocol_version = '';
         }
 
-        var_dump(headers_list());
-
-        foreach (headers_list() as $header) {
+        foreach ($this->getInitialHeaders() as $header) {
             preg_match("/^([^:]*):[ ]?(.*)/", $header, $matches);
 
             $this->headers[$matches[1]] = $matches[2];
         }
+
+    }
+
+    protected function getInitialHeaders(): array
+    {
+        return headers_list();
     }
 
     public function getProtocolVersion(): string
@@ -40,7 +44,7 @@ class Message implements MessageInterface
 
     public function getHeaders(): array
     {
-        return [];
+        return $this->headers;
     }
 
     public function hasHeader(string $name): bool

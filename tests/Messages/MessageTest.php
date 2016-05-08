@@ -31,14 +31,17 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
     public function testWeCanGetAllHeaders()
     {
-        $time = $this->getFunctionMock(__NAMESPACE__, "time");
-        $time->expects($this->once())->willReturn(3);
+        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
+                             ->setMethods(array('getInitialHeaders'))
+                             ->disableOriginalConstructor()
+                             ->getMock();
+        $messageMock->expects($this->once())
+                    ->method('getInitialHeaders')
+                    ->willReturn(['x-powered-by: PHP']);
+        $messageMock->__construct();
 
-        $this->assertEquals(3, time());
-        // $message = new Message();
-        //
-        // $result = $message->getHeaders();
+        $result = $messageMock->getHeaders();
 
-        // $this->assertEquals(['x-powered-by' => 'PHP'], $result);
+        $this->assertEquals(['x-powered-by' => 'PHP'], $result);
     }
 }

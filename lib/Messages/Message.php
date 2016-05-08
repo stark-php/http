@@ -19,7 +19,7 @@ class Message implements MessageInterface
         foreach ($this->getInitialHeaders() as $header) {
             preg_match("/^([^:]*):[ ]?(.*)/", $header, $matches);
 
-            $this->headers[$matches[1]] = $matches[2];
+            $this->headers[strtolower($matches[1])][] = $matches[2];
         }
 
     }
@@ -49,12 +49,17 @@ class Message implements MessageInterface
 
     public function hasHeader(string $name): bool
     {
-        return true;
+        // So we can do case insensative searching easier
+        $lowerCaseName = strtolower($name);
+
+        return isset($this->headers[$lowerCaseName]) ? true : false;
     }
 
     public function getHeader(string $name): array
     {
-        return [];
+        $lowerCaseName = strtolower($name);
+
+        return $this->headers[$lowerCaseName] ?? [];
     }
 
     public function getHeaderLine(string $name): string

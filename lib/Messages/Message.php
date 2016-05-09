@@ -91,6 +91,16 @@ class Message implements MessageInterface
 
     public function withAddedHeader(string $name, $value): MessageInterface
     {
+        $lowerCaseName = strtolower($name);
+
+        if (is_string($value)) {
+            $value = [$value];
+        }
+
+        if (isset($this->headers[$lowerCaseName])) {
+            $this->headers[$lowerCaseName] = array_merge($this->headers[$lowerCaseName], $value);
+        }
+
         return $this;
     }
 

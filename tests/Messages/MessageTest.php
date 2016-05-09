@@ -28,14 +28,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
     public function testWeCanGetAllHeaders()
     {
-        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
-                             ->setMethods(array('getInitialHeaders'))
-                             ->disableOriginalConstructor()
-                             ->getMock();
-        $messageMock->expects($this->once())
-                    ->method('getInitialHeaders')
-                    ->willReturn(['x-powered-by: PHP']);
-        $messageMock->__construct();
+        $messageMock = $this->createMockForMessage();
 
         $result = $messageMock->getHeaders();
 
@@ -44,14 +37,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
     public function testIfWeGetTheRightResultForHasHeader()
     {
-        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
-                             ->setMethods(array('getInitialHeaders'))
-                             ->disableOriginalConstructor()
-                             ->getMock();
-        $messageMock->expects($this->once())
-                    ->method('getInitialHeaders')
-                    ->willReturn(['x-powered-by: PHP']);
-        $messageMock->__construct();
+        $messageMock = $this->createMockForMessage();
 
         $poweredBy = $messageMock->hasHeader('x-powered-by');
         $nonExistantHeader = $messageMock->hasHeader('no-header-exists');
@@ -62,14 +48,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
     public function testIfHasHeaderHandlesArgumentsCaseInsensitively()
     {
-        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
-                             ->setMethods(array('getInitialHeaders'))
-                             ->disableOriginalConstructor()
-                             ->getMock();
-        $messageMock->expects($this->once())
-                    ->method('getInitialHeaders')
-                    ->willReturn(['x-powered-by: PHP']);
-        $messageMock->__construct();
+        $messageMock = $this->createMockForMessage();
 
         $poweredBy = $messageMock->hasHeader('x-powered-by');
         $poweredByUppercase = $messageMock->hasHeader('X-POWERED-BY');
@@ -80,14 +59,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
     public function testWeCanGetAHeaderByKeyAndItsValue()
     {
-        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
-                             ->setMethods(array('getInitialHeaders'))
-                             ->disableOriginalConstructor()
-                             ->getMock();
-        $messageMock->expects($this->once())
-                    ->method('getInitialHeaders')
-                    ->willReturn(['x-powered-by: PHP']);
-        $messageMock->__construct();
+        $messageMock = $this->createMockForMessage();
 
         $poweredBy = $messageMock->getHeader('x-powered-by');
         $poweredByUppercase = $messageMock->getHeader('X-POWERED-BY');
@@ -96,5 +68,30 @@ class MessageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['PHP'], $poweredBy);
         $this->assertEquals(['PHP'], $poweredByUppercase);
         $this->assertEquals([], $nonExistantHeader);
+    }
+
+    public function testWeCanGetHeaderValuesAsAString()
+    {
+        $messageMock = $this->createMockForMessage(['x-powered-by: PHP', 'x-powered-by: Stark']);
+
+        $headerString = $messageMock->getHeaderLine('x-powered-by');
+        $headerStringUppercaseKey = $messageMock->getHeaderLine('x-powered-by');
+
+        $this->assertEquals('PHP, Stark', $headerString);
+        $this->assertEquals('PHP, Stark', $headerStringUppercaseKey);
+    }
+
+    protected function createMockForMessage(array $headers = ['x-powered-by: PHP'])
+    {
+        $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
+                             ->setMethods(array('getInitialHeaders'))
+                             ->disableOriginalConstructor()
+                             ->getMock();
+        $messageMock->expects($this->once())
+                    ->method('getInitialHeaders')
+                    ->willReturn($headers);
+        $messageMock->__construct();
+
+        return $messageMock;
     }
 }

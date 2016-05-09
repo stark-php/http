@@ -64,6 +64,17 @@ class Message implements MessageInterface
 
     public function getHeaderLine(string $name): string
     {
+        $lowerCaseName = strtolower($name);
+
+        if (isset($this->headers[$lowerCaseName])) {
+            $headerLine = '';
+
+            foreach ($this->headers[$lowerCaseName] as $value) {
+                $headerLine .= "{$value}, ";
+            }
+
+            return rtrim($headerLine, ', ');
+        }
         return '';
     }
 

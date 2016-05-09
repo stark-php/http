@@ -106,6 +106,10 @@ class Message implements MessageInterface
 
     public function withoutHeader(string $name): MessageInterface
     {
+        $lowerCaseName = strtolower($name);
+
+        unset($this->headers[$lowerCaseName]);
+
         return $this;
     }
 

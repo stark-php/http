@@ -80,6 +80,12 @@ class Message implements MessageInterface
 
     public function withHeader(string $name, $value): MessageInterface
     {
+        if (is_string($value)) {
+            $value = [$value];
+        }
+
+        $this->headers[strtolower($name)] = $value;
+
         return $this;
     }
 

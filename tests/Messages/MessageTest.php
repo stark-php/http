@@ -81,6 +81,18 @@ class MessageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('PHP, Stark', $headerStringUppercaseKey);
     }
 
+    public function testWeCanReplaceHeaders()
+    {
+        $messageMock = $this->createMockForMessage();
+
+        $poweredBy = $messageMock->getHeader('x-powered-by');
+        $messageMock->withHeader('x-powered-by', 'Foobar');
+        $replacedHeader = $messageMock->getHeader('x-powered-by');
+
+        $this->assertEquals(['PHP'], $poweredBy);
+        $this->assertEquals(['Foobar'], $replacedHeader);
+    }
+
     protected function createMockForMessage(array $headers = ['x-powered-by: PHP'])
     {
         $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')

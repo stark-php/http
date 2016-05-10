@@ -76,9 +76,11 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
         $headerString = $messageMock->getHeaderLine('x-powered-by');
         $headerStringUppercaseKey = $messageMock->getHeaderLine('x-powered-by');
+        $headerStringThatDoesntExist = $messageMock->getHeaderLine('no-header-exists');
 
         $this->assertEquals('PHP, Stark', $headerString);
         $this->assertEquals('PHP, Stark', $headerStringUppercaseKey);
+        $this->assertEquals('', $headerStringThatDoesntExist);
     }
 
     public function testWeCanReplaceHeaders()

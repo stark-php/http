@@ -1,6 +1,11 @@
 language: php
 php:
   - '7.0'
+
 before_script:
   - composer install --prefer-source --no-interaction
   - composer dumpautoload
+  - mkdir -p build/logs
+
+after_success:
+  - travis_retry php vendor/bin/coveralls

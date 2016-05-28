@@ -18,7 +18,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
     {
         $streamWithNoLength = new Stream('LICENSE');
         $streamWithLength = new Stream('http://placehold.it/1500x1500');
-        $streamThatIsntWriteable = new Stream('http://google.com');
+        $streamThatIsntWriteable = new Stream('https://raw.githubusercontent.com/stark-php/http/master/LICENSE');
 
         $streamWithNoLengthSize = $streamWithNoLength->getSize();
         $streamWithLengthSize = $streamWithLength->getSize();
@@ -26,7 +26,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(null, $streamWithNoLengthSize);
         $this->assertEquals(52217, $streamWithLengthSize);
-        $this->assertEquals(259, $streamThatIsntWriteableSize);
+        $this->assertEquals(1076, $streamThatIsntWriteableSize);
     }
 
     public function testWeCanFindOutIfWeAreAtTheEndOfAStream()

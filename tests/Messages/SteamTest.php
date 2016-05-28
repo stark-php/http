@@ -37,4 +37,13 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($atTheEndOfAStream);
     }
+
+    public function testWeCanReadSomeBytesFromTheStream()
+    {
+        $stream = new Stream('LICENSE');
+
+        $fiveBytesOfInformation = $stream->read(5);
+
+        $this->assertEquals('The M', $fiveBytesOfInformation);
+    }
 }

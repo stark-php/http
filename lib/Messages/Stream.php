@@ -1,7 +1,7 @@
 <?php namespace Stark\Http\Messages;
 
 use Stark\Psr\Http\Message\StreamInterface;
-use RuntimeException;
+use Exception, RuntimeException;
 
 class Stream implements StreamInterface
 {
@@ -127,7 +127,11 @@ class Stream implements StreamInterface
 
     public function read(int $length): string
     {
-        return '';
+        try {
+            return fread($this->file, $length);
+        } catch (Exception $e) {
+            throw new RuntimeException($e->getMessage());
+        }
     }
 
     public function getContents(): string

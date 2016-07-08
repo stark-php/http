@@ -11,6 +11,8 @@ class Stream implements StreamInterface
      */
     protected $file;
 
+    protected $stream_contents;
+
     /**
      * Holds the metadata for the file
      * @var array
@@ -58,7 +60,7 @@ class Stream implements StreamInterface
 
     public function __toString(): string
     {
-        return stream_get_contents($this->file) ?? '';
+        return $this->getContents();
     }
 
     public function close()
@@ -73,7 +75,7 @@ class Stream implements StreamInterface
 
     public function getSize()
     {
-        return $this->metadata['Content-Length'] ?? null;
+        return $this->getMetadata('Content-Length') ?? null;
     }
 
     public function tell(): int
@@ -94,7 +96,7 @@ class Stream implements StreamInterface
 
     public function isSeekable(): bool
     {
-        return $this->isReadable();
+        return $this->getMetadata('seekable');
     }
 
     public function seek(int $offset, $whence = SEEK_SET)
@@ -112,7 +114,7 @@ class Stream implements StreamInterface
 
     public function isWritable(): bool
     {
-        return is_writable($this->metadata['uri']);
+        return is_writable($this->getMetadata('uri'));
     }
 
     public function write(string $string): int
@@ -122,7 +124,7 @@ class Stream implements StreamInterface
 
     public function isReadable(): bool
     {
-        return is_readable($this->metadata['uri']);
+        return is_readable($this->getMetadata('uri'));
     }
 
     public function read(int $length): string
@@ -136,10 +138,20 @@ class Stream implements StreamInterface
 
     public function getContents(): string
     {
-        return '';
+        if (!$this->stream_contents) {
+            $this->stream_contents = stream_get_contents($this->file);
+        }
+
+        return $this->stream_contents;
     }
 
     public function getMetadata(string $key = null)
     {
+        if ($key and isset($this->metadata[$key])) {
+            return $this->metadata[$key];
+        } elseif ($key) {
+            return null;
+        }
+        return $this->metadata;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Stark\Http\Messages\Message;
+use Stark\Http\Messages\{Message,Stream};
 
 class MessageTest extends PHPUnit_Framework_TestCase
 {
@@ -117,6 +117,24 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(['PHP'], $poweredBy);
         $this->assertEquals([], $removedHeader);
+    }
+
+    public function testWeCanSetAMessageBody()
+    {
+        $messageMock = $this->createMockForMessage();
+        $stream = new Stream('LICENSE');
+
+        $messageMock->withBody($stream);
+        $this->assertEquals($stream, $messageMock->getBody());
+    }
+
+    public function testAnExceptionIsThrownWhenThereIsNoBody()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $messageMock = $this->createMockForMessage();
+
+        $messageMock->getBody();
     }
 
     protected function createMockForMessage(array $headers = ['x-powered-by: PHP'])

@@ -1,12 +1,13 @@
 <?php namespace Stark\Http\Messages;
 
 use Stark\Psr\Http\Message\{MessageInterface, StreamInterface};
-use OutOfBoundsException;
+use OutOfBoundsException, InvalidArgumentException;
 
 class Message implements MessageInterface
 {
     protected $protocol_version;
     protected $headers = [];
+    protected $body;
 
     public function __construct()
     {
@@ -113,14 +114,18 @@ class Message implements MessageInterface
         return $this;
     }
 
-    // Should return StreamInterface
     public function getBody(): StreamInterface
     {
-        return '';
+        if (!$this->body) {
+            throw new InvalidArgumentException('There is no body for the message');
+        }
+        return $this->body;
     }
 
     public function withBody(StreamInterface $body): MessageInterface
     {
+        $this->body = $body;
+
         return $this;
     }
 }

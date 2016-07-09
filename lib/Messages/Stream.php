@@ -11,6 +11,10 @@ class Stream implements StreamInterface
      */
     protected $file;
 
+    /**
+     * Contents of the stream
+     * @var string
+     */
     protected $stream_contents;
 
     /**
@@ -110,6 +114,11 @@ class Stream implements StreamInterface
 
     public function rewind()
     {
+        $this->seek(0);
+
+        if ($this->tell() > 0) {
+            throw new RuntimeException('Unable to rewind the stream');
+        }
     }
 
     public function isWritable(): bool
@@ -119,7 +128,15 @@ class Stream implements StreamInterface
 
     public function write(string $string): int
     {
-        return 0;
+        if ($this->isWritable()) {
+            $numberOfBytesWritten = fwrite($this->file, $string);
+
+            if (false !== $numberOfBytesWritten) {
+                return $numberOfBytesWritten;
+            }
+            throw new RuntimeException('There was an issue with writing to that stream');
+        }
+        throw new RuntimeException('Unable to write to that stream');
     }
 
     public function isReadable(): bool
@@ -129,11 +146,12 @@ class Stream implements StreamInterface
 
     public function read(int $length): string
     {
-        try {
-            return fread($this->file, $length);
-        } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
+        $content = fread($this->file, $length);
+
+        if (false !== $content) {
+            return $content;
         }
+        throw new RuntimeException("There was an issue with reading the stream");
     }
 
     public function getContents(): string

@@ -103,4 +103,54 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($streamWithLengthIsSeekable);
         $this->assertFalse($streamThatIsntSeekableIsSeekable);
     }
+
+    public function testWeCanSeekAndRewindAStream()
+    {
+        $stream = new Stream('LICENSE');
+
+        $this->assertEquals(0, $stream->tell());
+
+        $stream->seek(10);
+
+        $this->assertEquals(10, $stream->tell());
+
+        $stream->rewind();
+
+        $this->assertEquals(0, $stream->tell());
+    }
+
+    public function testWeCanGetAllMetadata()
+    {
+        $stream = new Stream('LICENSE');
+
+        $this->assertEquals([
+            'timed_out' => false,
+            'blocked' => true,
+            'eof' => false,
+            'wrapper_type' => 'plainfile',
+            'stream_type' => 'STDIO',
+            'mode' => 'r+',
+            'unread_bytes' => 0,
+            'seekable' => true,
+            'uri' => 'LICENSE'
+        ], $stream->getMetadata());
+    }
+
+    public function testWeCanWriteToAStream()
+    {
+        // Create a file for the test
+        file_put_contents('test.file', '');
+
+        $stream = new Stream('test.file');
+
+        $this->assertEquals('', $stream->getContents());
+
+        $stream->write('Hello world');
+
+        $stream->rewind();
+
+        $this->assertEquals('Hello world', $stream->read(11));
+
+        unlink('test.file');
+    }
 }

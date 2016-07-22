@@ -112,10 +112,16 @@ class Uri implements UriInterface
      */
     public function getAuthority(): string
     {
-        if ($this->getPort() === NULL) {
-            return $this->getUserInfo() . $this->getHost();
+        if ($this->getUserInfo()) {
+            $user_info = $this->getUserInfo() . '@';
         } else {
-            return $this->getUserInfo() . $this->getHost(). ':' . $this->port;
+            $user_info = '';
+        }
+
+        if ($this->getPort() === NULL) {
+            return $user_info . $this->getHost();
+        } else {
+            return $user_info . $this->getHost(). ':' . $this->port;
         }
     }
 
@@ -346,10 +352,6 @@ class Uri implements UriInterface
      */
     public function withPort($port = null): UriInterface
     {
-        if ($port === NULL) {
-            $port = '';
-        }
-
         return $this->createNewInstanceWith('port', $port);
     }
 

@@ -1,7 +1,7 @@
 language: php
 php:
   - '7.0'
-  - '7.1alpha3'
+  - '7.1alpha2'
 
 before_script:
   - composer install --prefer-source --no-interaction

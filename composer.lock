@@ -4,17 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7973794533990304e0073c6772fda80e",
-    "content-hash": "6fbe4da12939934940fd941dea0e24f7",
+    "hash": "50db81d0996d9fdb1cc4f57dea39427b",
+    "content-hash": "c4b2fe2fcf20304217a5a4f45d23ae5d",
     "packages": [
         {
             "name": "stark/contracts",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stark-php/contracts.git",
+                "reference": "365243a250cd9de64790615d3bcbd12740b1b5de"
+            },
             "dist": {
-                "type": "path",
-                "url": "../contracts",
+                "type": "zip",
+                "url": "https://api.github.com/repos/stark-php/contracts/zipball/365243a250cd9de64790615d3bcbd12740b1b5de",
                 "reference": "365243a250cd9de64790615d3bcbd12740b1b5de",
-                "shasum": null
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -22,6 +27,7 @@
                     "Stark\\Contracts\\": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -31,16 +37,22 @@
                     "email": "christopher.rolfe198@gmail.com"
                 }
             ],
-            "description": "The interfaces for the Stark project"
+            "description": "The interfaces for the Stark project",
+            "time": "2016-05-07 19:35:44"
         },
         {
             "name": "stark/http-message",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stark-php/http-message.git",
+                "reference": "3b1961fbcbe2f45aec6d20992030da1d7e4944b3"
+            },
             "dist": {
-                "type": "path",
-                "url": "../http-message",
-                "reference": "4fc1d2e95813f86f67cd765a7e9eb920f90e1a65",
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/stark-php/http-message/zipball/3b1961fbcbe2f45aec6d20992030da1d7e4944b3",
+                "reference": "3b1961fbcbe2f45aec6d20992030da1d7e4944b3",
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -48,6 +60,7 @@
                     "Stark\\Psr\\Http\\Message\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -69,7 +82,8 @@
                 "psr-7",
                 "request",
                 "response"
-            ]
+            ],
+            "time": "2016-07-22 12:24:43"
         }
     ],
     "packages-dev": [

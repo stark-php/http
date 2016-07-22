@@ -4,14 +4,72 @@ use Stark\Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {
-    public function __construct(string $uri = '')
+    /**
+     * The scheme used with the uri
+     * @var string
+     */
+    protected $scheme = 'http';
+
+    /**
+     * Username used to access the uri
+     * @var string
+     */
+    protected $username = '';
+
+    /**
+     * Password used to access the uri
+     * @var string
+     */
+    protected $password = '';
+
+    /**
+     * Hostname for the uri
+     * @var string
+     */
+    protected $host = '';
+
+    /**
+     * Port for the uri
+     * @var integer
+     */
+    protected $port = NULL;
+
+    /**
+     * The path to access on the host of the uri
+     * @var string
+     */
+    protected $path = '';
+
+    /**
+     * The query string to use on the uri
+     * @var string
+     */
+    protected $query = '';
+
+    /**
+     * The fragment to use when accessing the uri
+     * @var string
+     */
+    protected $fragment = '';
+
+    public function __construct(...$uri)
     {
+        // We assume that we have all the properties passed in individually
+        if (is_array($uri)) {
+            $this->scheme = $uri[0];
+            $this->username = $uri[1];
+            $this->password = $uri[2];
+            $this->host = $uri[3];
+            $this->port = $uri[4];
+            $this->path = $uri[5];
+            $this->query = $uri[6];
+            $this->fragment = $uri[7];
+        }
         // If a uri is specified lets use that
         if ($uri) {
             $this->uri = $uri;
         // Otherwise lets use the current uri
         } else {
-            $_SERVER['REQUEST_SCHEME']
         }
     }
 
@@ -31,7 +89,7 @@ class Uri implements UriInterface
      */
     public function getScheme() : string
     {
-        return strtolower('');
+        return strtolower($this->scheme);
     }
 
     /**
@@ -52,7 +110,14 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string The URI authority, in "[user-info@]host[:port]" format.
      */
-    public function getAuthority(): string;
+    public function getAuthority(): string
+    {
+        if ($this->getPort() === NULL) {
+            return $this->getUserInfo() . $this->getHost();
+        } else {
+            return $this->getUserInfo() . $this->getHost(). ':' . $this->port;
+        }
+    }
 
     /**
      * Retrieve the user information component of the URI.
@@ -69,7 +134,15 @@ class Uri implements UriInterface
      *
      * @return string The URI user information, in "username[:password]" format.
      */
-    public function getUserInfo(): string;
+    public function getUserInfo(): string
+    {
+        if ($this->username !== '' and $this->password !== '') {
+            return $this->username . ':' . $this->password;
+        }
+
+        // By default username is an empty string
+        return $this->username;
+    }
 
     /**
      * Retrieve the host component of the URI.
@@ -82,7 +155,10 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string The URI host.
      */
-    public function getHost(): string;
+    public function getHost(): string
+    {
+        return $this->host;
+    }
 
     /**
      * Retrieve the port component of the URI.
@@ -99,7 +175,14 @@ class Uri implements UriInterface
      *
      * @return null|int The URI port.
      */
-    public function getPort();
+    public function getPort()
+    {
+        if (($this->port === 80 and $this->scheme === 'http') or ($this->port === 443 and $this->scheme === 'https')) {
+            return NULL;
+        } else {
+            return $this->port;
+        }
+    }
 
     /**
      * Retrieve the path component of the URI.
@@ -125,8 +208,12 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string The URI path.
+     * @todo Look into proper implementation of the above
      */
-    public function getPath(): string;
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
     /**
      * Retrieve the query string of the URI.
@@ -147,8 +234,12 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string The URI query string.
+     * @todo Look into proper implementation of the above
      */
-    public function getQuery(): string;
+    public function getQuery(): string
+    {
+        return $this->query;
+    }
 
     /**
      * Retrieve the fragment component of the URI.
@@ -165,8 +256,12 @@ class Uri implements UriInterface
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string The URI fragment.
+     * @todo Look into proper implementation of the above
      */
-    public function getFragment(): string;
+    public function getFragment(): string
+    {
+        return $this->fragment;
+    }
 
     /**
      * Return an instance with the specified scheme.
@@ -183,7 +278,10 @@ class Uri implements UriInterface
      * @return self A new instance with the specified scheme.
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
      */
-    public function withScheme(string $scheme): UriInterface;
+    public function withScheme(string $scheme): UriInterface
+    {
+        return $this->createNewInstanceWith('scheme', strtolower($scheme));
+    }
 
     /**
      * Return an instance with the specified user information.
@@ -199,7 +297,18 @@ class Uri implements UriInterface
      * @param null|string $password The password associated with $user.
      * @return self A new instance with the specified user information.
      */
-    public function withUserInfo(string $user, $password = null);
+    public function withUserInfo(string $user, $password = null): UriInterface
+    {
+        $new_properties = ['username'];
+        $new_values = [$user];
+
+        if ($password !== NULL) {
+            $new_properties[] = 'password';
+            $new_values[] = $password;
+        }
+
+        return $this->createNewInstanceWith($new_properties, $new_values);
+    }
 
     /**
      * Return an instance with the specified host.
@@ -213,7 +322,10 @@ class Uri implements UriInterface
      * @return self A new instance with the specified host.
      * @throws \InvalidArgumentException for invalid hostnames.
      */
-    public function withHost(string $host): UriInterface;
+    public function withHost(string $host): UriInterface
+    {
+        return $this->createNewInstanceWith('host', $host);
+    }
 
     /**
      * Return an instance with the specified port.
@@ -232,7 +344,14 @@ class Uri implements UriInterface
      * @return self A new instance with the specified port.
      * @throws \InvalidArgumentException for invalid ports.
      */
-    public function withPort(int $port): UriInterface;
+    public function withPort($port = null): UriInterface
+    {
+        if ($port === NULL) {
+            $port = '';
+        }
+
+        return $this->createNewInstanceWith('port', $port);
+    }
 
     /**
      * Return an instance with the specified path.
@@ -256,7 +375,10 @@ class Uri implements UriInterface
      * @return self A new instance with the specified path.
      * @throws \InvalidArgumentException for invalid paths.
      */
-    public function withPath(string $path): UriInterface;
+    public function withPath(string $path): UriInterface
+    {
+        return $this->createNewInstanceWith('path', $path);
+    }
 
     /**
      * Return an instance with the specified query string.
@@ -273,7 +395,10 @@ class Uri implements UriInterface
      * @return self A new instance with the specified query string.
      * @throws \InvalidArgumentException for invalid query strings.
      */
-    public function withQuery(string $query): UriInterface;
+    public function withQuery(string $query): UriInterface
+    {
+        return $this->createNewInstanceWith('query', $query);
+    }
 
     /**
      * Return an instance with the specified URI fragment.
@@ -289,7 +414,10 @@ class Uri implements UriInterface
      * @param string $fragment The fragment to use with the new instance.
      * @return self A new instance with the specified fragment.
      */
-    public function withFragment(string $fragment): UriInterface;
+    public function withFragment(string $fragment): UriInterface
+    {
+        return $this->createNewInstanceWith('fragment', $fragment);
+    }
 
     /**
      * Return the string representation as a URI reference.
@@ -314,5 +442,67 @@ class Uri implements UriInterface
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
      */
-    public function __toString(): string;
+    public function __toString(): string
+    {
+        $string = '';
+
+        if ($scheme = $this->scheme) {
+            $string .= $scheme . ':';
+        }
+
+        if ($authority = $this->getAuthority()) {
+            $string .= '//' . $authority;
+        }
+
+        if ($path = $this->getPath()) {
+            if (substr($path, 0, 1) !== '/') {
+                $string .= '/';
+            }
+
+            $string .= $path;
+        }
+
+        if ($query = $this->getQuery()) {
+            $string .= '?'.$query;
+        }
+
+        if ($fragment = $this->getFragment()) {
+            $string .= '#'.$fragment;
+        }
+
+        return $string;
+    }
+
+    /**
+     * Creates a new instance of Uri with the properties passed in
+     * @param  array|string $property An array of properties to change or just a single string
+     * @param  array|string $value    The values of the properties to change
+     * @return UriInterface           A new instance of Uri that contains the new properties
+     */
+    protected function createNewInstanceWith($property, $value) : UriInterface
+    {
+        $string = (string) $this;
+
+        $indexes = ['scheme', 'username', 'password', 'host', 'port', 'path', 'query', 'fragment'];
+        $values = [
+            $this->scheme,
+            $this->username,
+            $this->password,
+            $this->host,
+            $this->port,
+            $this->path,
+            $this->query,
+            $this->fragment
+        ];
+
+        if (is_array($property)) {
+            foreach ($property as $index => $single) {
+                $values[array_search($single, $indexes)] = $value[$index];
+            }
+        } else {
+            $values[array_search($property, $indexes)] = $value;
+        }
+
+        return new Uri(...$values);
+    }
 }

@@ -30,7 +30,7 @@ class Uri implements UriInterface
 
     /**
      * Port for the uri
-     * @var integer
+     * @var integer|null
      */
     protected $port = NULL;
 
@@ -55,7 +55,7 @@ class Uri implements UriInterface
     public function __construct(...$uri)
     {
         // We assume that we have all the properties passed in individually
-        if (is_array($uri)) {
+        if (is_array($uri) and count($uri) > 1) {
             $this->scheme = $uri[0];
             $this->username = $uri[1];
             $this->password = $uri[2];
@@ -64,12 +64,45 @@ class Uri implements UriInterface
             $this->path = $uri[5];
             $this->query = $uri[6];
             $this->fragment = $uri[7];
-        }
         // If a uri is specified lets use that
-        if ($uri) {
-            $this->uri = $uri;
-        // Otherwise lets use the current uri
         } else {
+            $uri = $uri[0];
+
+            preg_match('/^([^:]*)/', $uri, $scheme);
+            preg_match('/^[^:]*:\/\/([^:]*)[@|:]/', $uri, $username);
+            preg_match('/^[^:]*:\/\/[^:]*:([^@]*)@/', $uri, $password);
+            preg_match('/^[^:]*:\/\/([^@]*@)?([^:|\/|?|#]*)/', $uri, $host);
+            preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*:?([0-9]*)?\//', $uri, $port);
+            preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^?|#]*)?/', $uri, $path);
+            preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^?]*)?\?([^#|$]*)/', $uri, $query);
+            preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^#]*)?\#([^?|$]*)/', $uri, $fragment);
+
+            $this->scheme = $scheme[1];
+            $this->host = $host[2];
+
+            if (isset($path[3])) {
+                $this->path = $path[3];
+            }
+
+            if (isset($username[1])) {
+                $this->username = $username[1];
+            }
+
+            if (isset($password[1])) {
+                $this->password = $password[1];
+            }
+
+            if (isset($port[2]) and !empty($port[2])) {
+                $this->port = $port[2];
+            }
+
+            if (isset($query[4])) {
+                $this->query = $query[4];
+            }
+
+            if (isset($fragment[4])) {
+                $this->fragment = $fragment[4];
+            }
         }
     }
 

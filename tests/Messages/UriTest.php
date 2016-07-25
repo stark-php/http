@@ -110,4 +110,134 @@ class UriTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('new-fragment', $new_instance->getFragment());
     }
+
+    /**
+     * Testing Uri combinations
+     */
+
+    public function testWeCanCreateAUriFromAStringInItsLongestForm()
+    {
+        $uri = new Uri('http://foo:bar@google.com:8080/baz/asdf/?foo=bar#fragment');
+
+        $this->assertEquals('http', $uri->getScheme());
+        $this->assertEquals('foo:bar@google.com:8080', $uri->getAuthority());
+        $this->assertEquals('foo:bar', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(8080, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('foo=bar', $uri->getQuery());
+        $this->assertEquals('fragment', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringInItsShortestForm()
+    {
+        $uri = new Uri('http://google.com/baz/asdf/');
+
+        $this->assertEquals('http', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringWithUsernameAndPasswordAndHttps()
+    {
+        $uri = new Uri('https://foo:baz@google.com/baz/asdf/');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('foo:baz@google.com', $uri->getAuthority());
+        $this->assertEquals('foo:baz', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringWithQueryAndHttps()
+    {
+        $uri = new Uri('https://google.com/baz/asdf/?foo=bar&lorem=ipsum');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('foo=bar&lorem=ipsum', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringWithFragmentAndHttps()
+    {
+        $uri = new Uri('https://google.com/baz/asdf/#fragment');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('', $uri->getQuery());
+        $this->assertEquals('fragment', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringWithQueryFragmentAndHttps()
+    {
+        $uri = new Uri('https://google.com/baz/asdf/?asdf=baz#fragment');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/baz/asdf/', $uri->getPath());
+        $this->assertEquals('asdf=baz', $uri->getQuery());
+        $this->assertEquals('fragment', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringQueryFragmentHttpsAndNoPath()
+    {
+        $uri = new Uri('https://google.com?asdf=baz#fragment');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('', $uri->getPath());
+        $this->assertEquals('asdf=baz', $uri->getQuery());
+        $this->assertEquals('fragment', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringQueryFragmentHttpsAndASingleSlashPath()
+    {
+        $uri = new Uri('https://google.com/?asdf=baz#fragment');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/', $uri->getPath());
+        $this->assertEquals('asdf=baz', $uri->getQuery());
+        $this->assertEquals('fragment', $uri->getFragment());
+    }
+
+    public function testWeCanCreateAUriFromAStringWithNoPath()
+    {
+        $uri = new Uri('https://google.com');
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('google.com', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('google.com', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('', $uri->getPath());
+        $this->assertEquals('', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
 }

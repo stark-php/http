@@ -4,17 +4,16 @@ use Stark\Http\Messages\Stream;
 
 class StreamTest extends PHPUnit_Framework_TestCase
 {
-
     public function testWeCanGetTheBodyOfAStream()
     {
-        $stream = new Stream('LICENSE');
+        $stream      = new Stream('LICENSE');
         $licenseBody = file_get_contents('LICENSE');
 
         $streamCastToString = (string) $stream;
-        $streamBody = $stream->getContents();
+        $streamBody         = $stream->getContents();
 
-        $this->assertEquals($licenseBody, $streamCastToString);
-        $this->assertEquals($licenseBody, $streamBody);
+        $this->assertSame($licenseBody, $streamCastToString);
+        $this->assertSame($licenseBody, $streamBody);
     }
 
     public function testWeCanGetThePositionOfAStream()
@@ -23,22 +22,22 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $position = $stream->tell();
 
-        $this->assertEquals(0, $position);
+        $this->assertSame(0, $position);
     }
 
     public function testWeCanGetTheSizeOfTheStream()
     {
-        $streamWithNoLength = new Stream('LICENSE');
-        $streamWithLength = new Stream('http://placehold.it/1500x1500');
+        $streamWithNoLength      = new Stream('LICENSE');
+        $streamWithLength        = new Stream('http://placehold.it/1500x1500');
         $streamThatIsntWriteable = new Stream('https://raw.githubusercontent.com/stark-php/http/master/LICENSE');
 
-        $streamWithNoLengthSize = $streamWithNoLength->getSize();
-        $streamWithLengthSize = $streamWithLength->getSize();
+        $streamWithNoLengthSize      = $streamWithNoLength->getSize();
+        $streamWithLengthSize        = $streamWithLength->getSize();
         $streamThatIsntWriteableSize = $streamThatIsntWriteable->getSize();
 
-        $this->assertEquals(null, $streamWithNoLengthSize);
-        $this->assertEquals(52217, $streamWithLengthSize);
-        $this->assertEquals(1076, $streamThatIsntWriteableSize);
+        $this->assertSame(null, $streamWithNoLengthSize);
+        $this->assertSame(52217, $streamWithLengthSize);
+        $this->assertSame(1076, $streamThatIsntWriteableSize);
     }
 
     public function testWeCanFindOutIfWeAreAtTheEndOfAStream()
@@ -56,17 +55,17 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $fiveBytesOfInformation = $stream->read(5);
 
-        $this->assertEquals('The M', $fiveBytesOfInformation);
+        $this->assertSame('The M', $fiveBytesOfInformation);
     }
 
     public function testCheckIfAStreamIsWriteable()
     {
-        $streamWithNoLength = new Stream('LICENSE');
-        $streamWithLength = new Stream('http://placehold.it/1500x1500');
+        $streamWithNoLength      = new Stream('LICENSE');
+        $streamWithLength        = new Stream('http://placehold.it/1500x1500');
         $streamThatIsntWriteable = new Stream('https://raw.githubusercontent.com/stark-php/http/master/LICENSE');
 
-        $streamWithNoLengthIsWriteable = $streamWithNoLength->isWritable();
-        $streamWithLengthIsWriteable = $streamWithLength->isWritable();
+        $streamWithNoLengthIsWriteable      = $streamWithNoLength->isWritable();
+        $streamWithLengthIsWriteable        = $streamWithLength->isWritable();
         $streamThatIsntWriteableIsWriteable = $streamThatIsntWriteable->isWritable();
 
         $this->assertTrue($streamWithNoLengthIsWriteable);
@@ -76,12 +75,12 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
     public function testCheckIfAStreamIsReadable()
     {
-        $streamWithNoLength = new Stream('LICENSE');
-        $streamWithLength = new Stream('http://placehold.it/1500x1500');
+        $streamWithNoLength     = new Stream('LICENSE');
+        $streamWithLength       = new Stream('http://placehold.it/1500x1500');
         $streamThatIsntReadable = new Stream('https://raw.githubusercontent.com/stark-php/http/master/LICENSE');
 
-        $streamWithNoLengthIsReadable = $streamWithNoLength->isReadable();
-        $streamWithLengthIsReadable = $streamWithLength->isReadable();
+        $streamWithNoLengthIsReadable     = $streamWithNoLength->isReadable();
+        $streamWithLengthIsReadable       = $streamWithLength->isReadable();
         $streamThatIsntReadableIsReadable = $streamThatIsntReadable->isReadable();
 
         $this->assertTrue($streamWithNoLengthIsReadable);
@@ -91,12 +90,12 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
     public function testCheckIfAStreamIsSeekable()
     {
-        $streamWithNoLength = new Stream('LICENSE');
-        $streamWithLength = new Stream('http://placehold.it/1500x1500');
+        $streamWithNoLength     = new Stream('LICENSE');
+        $streamWithLength       = new Stream('http://placehold.it/1500x1500');
         $streamThatIsntSeekable = new Stream('https://raw.githubusercontent.com/stark-php/http/master/LICENSE');
 
-        $streamWithNoLengthIsSeekable = $streamWithNoLength->isSeekable();
-        $streamWithLengthIsSeekable = $streamWithLength->isSeekable();
+        $streamWithNoLengthIsSeekable     = $streamWithNoLength->isSeekable();
+        $streamWithLengthIsSeekable       = $streamWithLength->isSeekable();
         $streamThatIsntSeekableIsSeekable = $streamThatIsntSeekable->isSeekable();
 
         $this->assertTrue($streamWithNoLengthIsSeekable);
@@ -108,31 +107,31 @@ class StreamTest extends PHPUnit_Framework_TestCase
     {
         $stream = new Stream('LICENSE');
 
-        $this->assertEquals(0, $stream->tell());
+        $this->assertSame(0, $stream->tell());
 
         $stream->seek(10);
 
-        $this->assertEquals(10, $stream->tell());
+        $this->assertSame(10, $stream->tell());
 
         $stream->rewind();
 
-        $this->assertEquals(0, $stream->tell());
+        $this->assertSame(0, $stream->tell());
     }
 
     public function testWeCanGetAllMetadata()
     {
         $stream = new Stream('LICENSE');
 
-        $this->assertEquals([
-            'timed_out' => false,
-            'blocked' => true,
-            'eof' => false,
+        $this->assertSame([
+            'timed_out'    => false,
+            'blocked'      => true,
+            'eof'          => false,
             'wrapper_type' => 'plainfile',
-            'stream_type' => 'STDIO',
-            'mode' => 'r+',
+            'stream_type'  => 'STDIO',
+            'mode'         => 'r+',
             'unread_bytes' => 0,
-            'seekable' => true,
-            'uri' => 'LICENSE'
+            'seekable'     => true,
+            'uri'          => 'LICENSE',
         ], $stream->getMetadata());
     }
 
@@ -143,13 +142,13 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $stream = new Stream('test.file');
 
-        $this->assertEquals('', $stream->getContents());
+        $this->assertSame('', $stream->getContents());
 
         $stream->write('Hello world');
 
         $stream->rewind();
 
-        $this->assertEquals('Hello world', $stream->read(11));
+        $this->assertSame('Hello world', $stream->read(11));
 
         unlink('test.file');
     }

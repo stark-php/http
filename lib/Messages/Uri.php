@@ -1,53 +1,63 @@
-<?php namespace Stark\Http\Messages;
+<?php
+
+namespace Stark\Http\Messages;
 
 use Stark\Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {
     /**
-     * The scheme used with the uri
+     * The scheme used with the uri.
+     *
      * @var string
      */
     protected $scheme = 'http';
 
     /**
-     * Username used to access the uri
+     * Username used to access the uri.
+     *
      * @var string
      */
     protected $username = '';
 
     /**
-     * Password used to access the uri
+     * Password used to access the uri.
+     *
      * @var string
      */
     protected $password = '';
 
     /**
-     * Hostname for the uri
+     * Hostname for the uri.
+     *
      * @var string
      */
     protected $host = '';
 
     /**
-     * Port for the uri
-     * @var integer|null
+     * Port for the uri.
+     *
+     * @var int|null
      */
-    protected $port = NULL;
+    protected $port = null;
 
     /**
-     * The path to access on the host of the uri
+     * The path to access on the host of the uri.
+     *
      * @var string
      */
     protected $path = '';
 
     /**
-     * The query string to use on the uri
+     * The query string to use on the uri.
+     *
      * @var string
      */
     protected $query = '';
 
     /**
-     * The fragment to use when accessing the uri
+     * The fragment to use when accessing the uri.
+     *
      * @var string
      */
     protected $fragment = '';
@@ -118,6 +128,7 @@ class Uri implements UriInterface
      * added.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
+     *
      * @return string The URI scheme.
      */
     public function getScheme() : string
@@ -141,20 +152,21 @@ class Uri implements UriInterface
      * scheme, it SHOULD NOT be included.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
+     *
      * @return string The URI authority, in "[user-info@]host[:port]" format.
      */
     public function getAuthority(): string
     {
         if ($this->getUserInfo()) {
-            $user_info = $this->getUserInfo() . '@';
+            $user_info = $this->getUserInfo().'@';
         } else {
             $user_info = '';
         }
 
-        if ($this->getPort() === NULL) {
-            return $user_info . $this->getHost();
+        if ($this->getPort() === null) {
+            return $user_info.$this->getHost();
         } else {
-            return $user_info . $this->getHost(). ':' . $this->port;
+            return $user_info.$this->getHost().':'.$this->port;
         }
     }
 
@@ -176,7 +188,7 @@ class Uri implements UriInterface
     public function getUserInfo(): string
     {
         if ($this->username !== '' and $this->password !== '') {
-            return $this->username . ':' . $this->password;
+            return $this->username.':'.$this->password;
         }
 
         // By default username is an empty string
@@ -192,6 +204,7 @@ class Uri implements UriInterface
      * Section 3.2.2.
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
+     *
      * @return string The URI host.
      */
     public function getHost(): string
@@ -217,7 +230,7 @@ class Uri implements UriInterface
     public function getPort()
     {
         if (($this->port === 80 and $this->scheme === 'http') or ($this->port === 443 and $this->scheme === 'https')) {
-            return NULL;
+            return;
         } else {
             return $this->port;
         }
@@ -246,7 +259,9 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
+     *
      * @return string The URI path.
+     *
      * @todo Look into proper implementation of the above
      */
     public function getPath(): string
@@ -272,7 +287,9 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
+     *
      * @return string The URI query string.
+     *
      * @todo Look into proper implementation of the above
      */
     public function getQuery(): string
@@ -294,7 +311,9 @@ class Uri implements UriInterface
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
+     *
      * @return string The URI fragment.
+     *
      * @todo Look into proper implementation of the above
      */
     public function getFragment(): string
@@ -314,7 +333,9 @@ class Uri implements UriInterface
      * An empty scheme is equivalent to removing the scheme.
      *
      * @param string $scheme The scheme to use with the new instance.
+     *
      * @return self A new instance with the specified scheme.
+     *
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
      */
     public function withScheme(string $scheme): UriInterface
@@ -332,8 +353,9 @@ class Uri implements UriInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param string $user The user name to use for authority.
+     * @param string      $user     The user name to use for authority.
      * @param null|string $password The password associated with $user.
+     *
      * @return self A new instance with the specified user information.
      */
     public function withUserInfo(string $user, $password = null): UriInterface
@@ -341,7 +363,7 @@ class Uri implements UriInterface
         $new_properties = ['username'];
         $new_values = [$user];
 
-        if ($password !== NULL) {
+        if ($password !== null) {
             $new_properties[] = 'password';
             $new_values[] = $password;
         }
@@ -358,7 +380,9 @@ class Uri implements UriInterface
      * An empty host value is equivalent to removing the host.
      *
      * @param string $host The hostname to use with the new instance.
+     *
      * @return self A new instance with the specified host.
+     *
      * @throws \InvalidArgumentException for invalid hostnames.
      */
     public function withHost(string $host): UriInterface
@@ -379,8 +403,10 @@ class Uri implements UriInterface
      * information.
      *
      * @param null|int $port The port to use with the new instance; a null value
-     *     removes the port information.
+     *                       removes the port information.
+     *
      * @return self A new instance with the specified port.
+     *
      * @throws \InvalidArgumentException for invalid ports.
      */
     public function withPort($port = null): UriInterface
@@ -407,7 +433,9 @@ class Uri implements UriInterface
      * Implementations ensure the correct encoding as outlined in getPath().
      *
      * @param string $path The path to use with the new instance.
+     *
      * @return self A new instance with the specified path.
+     *
      * @throws \InvalidArgumentException for invalid paths.
      */
     public function withPath(string $path): UriInterface
@@ -427,7 +455,9 @@ class Uri implements UriInterface
      * An empty query string value is equivalent to removing the query string.
      *
      * @param string $query The query string to use with the new instance.
+     *
      * @return self A new instance with the specified query string.
+     *
      * @throws \InvalidArgumentException for invalid query strings.
      */
     public function withQuery(string $query): UriInterface
@@ -447,6 +477,7 @@ class Uri implements UriInterface
      * An empty fragment value is equivalent to removing the fragment.
      *
      * @param string $fragment The fragment to use with the new instance.
+     *
      * @return self A new instance with the specified fragment.
      */
     public function withFragment(string $fragment): UriInterface
@@ -475,6 +506,7 @@ class Uri implements UriInterface
      * - If a fragment is present, it MUST be prefixed by "#".
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     *
      * @return string
      */
     public function __toString(): string
@@ -482,11 +514,11 @@ class Uri implements UriInterface
         $string = '';
 
         if ($scheme = $this->scheme) {
-            $string .= $scheme . ':';
+            $string .= $scheme.':';
         }
 
         if ($authority = $this->getAuthority()) {
-            $string .= '//' . $authority;
+            $string .= '//'.$authority;
         }
 
         if ($path = $this->getPath()) {
@@ -509,10 +541,12 @@ class Uri implements UriInterface
     }
 
     /**
-     * Creates a new instance of Uri with the properties passed in
-     * @param  array|string $property An array of properties to change or just a single string
-     * @param  array|string $value    The values of the properties to change
-     * @return UriInterface           A new instance of Uri that contains the new properties
+     * Creates a new instance of Uri with the properties passed in.
+     *
+     * @param array|string $property An array of properties to change or just a single string
+     * @param array|string $value    The values of the properties to change
+     *
+     * @return UriInterface A new instance of Uri that contains the new properties
      */
     protected function createNewInstanceWith($property, $value) : UriInterface
     {
@@ -527,7 +561,7 @@ class Uri implements UriInterface
             $this->port,
             $this->path,
             $this->query,
-            $this->fragment
+            $this->fragment,
         ];
 
         if (is_array($property)) {
@@ -538,6 +572,6 @@ class Uri implements UriInterface
             $values[array_search($property, $indexes)] = $value;
         }
 
-        return new Uri(...$values);
+        return new self(...$values);
     }
 }

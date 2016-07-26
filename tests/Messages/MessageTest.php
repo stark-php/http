@@ -1,29 +1,30 @@
 <?php
 
-use Stark\Http\Messages\{Message,Stream};
+use Stark\Http\Messages\Message;
+use Stark\Http\Messages\Stream;
 
 class MessageTest extends PHPUnit_Framework_TestCase
 {
     public function testWeCanGetTheProtocolVersion()
     {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $message = new Message();
+        $message                    = new Message();
 
         $result = $message->getProtocolVersion();
 
-        $this->assertEquals('1.1', $result);
+        $this->assertSame('1.1', $result);
     }
 
     public function testWeCanSetTheProtocolVersion()
     {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $message = new Message();
+        $message                    = new Message();
 
-        $message->withProtocolVersion('2.0');
+        $new_instance = $message->withProtocolVersion('2.0');
 
-        $result = $message->getProtocolVersion();
+        $result = $new_instance->getProtocolVersion();
 
-        $this->assertEquals('2.0', $result);
+        $this->assertSame('2.0', $result);
     }
 
     public function testWeCanGetAllHeaders()
@@ -32,14 +33,14 @@ class MessageTest extends PHPUnit_Framework_TestCase
 
         $result = $messageMock->getHeaders();
 
-        $this->assertEquals(['x-powered-by' => ['PHP']], $result);
+        $this->assertSame(['x-powered-by' => ['PHP']], $result);
     }
 
     public function testIfWeGetTheRightResultForHasHeader()
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->hasHeader('x-powered-by');
+        $poweredBy         = $messageMock->hasHeader('x-powered-by');
         $nonExistantHeader = $messageMock->hasHeader('no-header-exists');
 
         $this->assertTrue($poweredBy);
@@ -50,7 +51,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->hasHeader('x-powered-by');
+        $poweredBy          = $messageMock->hasHeader('x-powered-by');
         $poweredByUppercase = $messageMock->hasHeader('X-POWERED-BY');
 
         $this->assertTrue($poweredBy);
@@ -61,71 +62,72 @@ class MessageTest extends PHPUnit_Framework_TestCase
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->getHeader('x-powered-by');
+        $poweredBy          = $messageMock->getHeader('x-powered-by');
         $poweredByUppercase = $messageMock->getHeader('X-POWERED-BY');
-        $nonExistantHeader = $messageMock->getHeader('no-header-exists');
+        $nonExistantHeader  = $messageMock->getHeader('no-header-exists');
 
-        $this->assertEquals(['PHP'], $poweredBy);
-        $this->assertEquals(['PHP'], $poweredByUppercase);
-        $this->assertEquals([], $nonExistantHeader);
+        $this->assertSame(['PHP'], $poweredBy);
+        $this->assertSame(['PHP'], $poweredByUppercase);
+        $this->assertSame([], $nonExistantHeader);
     }
 
     public function testWeCanGetHeaderValuesAsAString()
     {
         $messageMock = $this->createMockForMessage(['x-powered-by: PHP', 'x-powered-by: Stark']);
 
-        $headerString = $messageMock->getHeaderLine('x-powered-by');
-        $headerStringUppercaseKey = $messageMock->getHeaderLine('x-powered-by');
+        $headerString                = $messageMock->getHeaderLine('x-powered-by');
+        $headerStringUppercaseKey    = $messageMock->getHeaderLine('x-powered-by');
         $headerStringThatDoesntExist = $messageMock->getHeaderLine('no-header-exists');
 
-        $this->assertEquals('PHP, Stark', $headerString);
-        $this->assertEquals('PHP, Stark', $headerStringUppercaseKey);
-        $this->assertEquals('', $headerStringThatDoesntExist);
+        $this->assertSame('PHP, Stark', $headerString);
+        $this->assertSame('PHP, Stark', $headerStringUppercaseKey);
+        $this->assertSame('', $headerStringThatDoesntExist);
     }
 
     public function testWeCanReplaceHeaders()
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->getHeader('x-powered-by');
-        $messageMock->withHeader('x-powered-by', 'Foobar');
-        $replacedHeader = $messageMock->getHeader('x-powered-by');
+        $poweredBy      = $messageMock->getHeader('x-powered-by');
+        $new_instance   = $messageMock->withHeader('x-powered-by', 'Foobar');
+        $replacedHeader = $new_instance->getHeader('x-powered-by');
 
-        $this->assertEquals(['PHP'], $poweredBy);
-        $this->assertEquals(['Foobar'], $replacedHeader);
+        $this->assertSame(['PHP'], $poweredBy);
+        $this->assertSame(['Foobar'], $replacedHeader);
     }
 
     public function testWeCanAppendToHeaders()
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->getHeader('x-powered-by');
-        $messageMock->withAddedHeader('x-powered-by', 'Foobar');
-        $appendedHeader = $messageMock->getHeader('x-powered-by');
+        $poweredBy      = $messageMock->getHeader('x-powered-by');
+        $new_instance   = $messageMock->withAddedHeader('x-powered-by', 'Foobar');
+        $appendedHeader = $new_instance->getHeader('x-powered-by');
 
-        $this->assertEquals(['PHP'], $poweredBy);
-        $this->assertEquals(['PHP', 'Foobar'], $appendedHeader);
+        $this->assertSame(['PHP'], $poweredBy);
+        $this->assertSame(['PHP', 'Foobar'], $appendedHeader);
     }
 
     public function testWeCanRemoveAHeader()
     {
         $messageMock = $this->createMockForMessage();
 
-        $poweredBy = $messageMock->getHeader('x-powered-by');
-        $messageMock->withoutHeader('x-powered-by');
-        $removedHeader = $messageMock->getHeader('x-powered-by');
+        $poweredBy     = $messageMock->getHeader('x-powered-by');
+        $new_instance  = $messageMock->withoutHeader('x-powered-by');
+        $removedHeader = $new_instance->getHeader('x-powered-by');
 
-        $this->assertEquals(['PHP'], $poweredBy);
-        $this->assertEquals([], $removedHeader);
+        $this->assertSame(['PHP'], $poweredBy);
+        $this->assertSame([], $removedHeader);
     }
 
     public function testWeCanSetAMessageBody()
     {
         $messageMock = $this->createMockForMessage();
-        $stream = new Stream('LICENSE');
+        $stream      = new Stream('LICENSE');
 
-        $messageMock->withBody($stream);
-        $this->assertEquals($stream, $messageMock->getBody());
+        $new_instance = $messageMock->withBody($stream);
+
+        $this->assertSame($stream, $new_instance->getBody());
     }
 
     public function testAnExceptionIsThrownWhenThereIsNoBody()
@@ -140,7 +142,7 @@ class MessageTest extends PHPUnit_Framework_TestCase
     protected function createMockForMessage(array $headers = ['x-powered-by: PHP'])
     {
         $messageMock = $this->getMockBuilder('Stark\Http\Messages\Message')
-                             ->setMethods(array('getInitialHeaders'))
+                             ->setMethods(['getInitialHeaders'])
                              ->disableOriginalConstructor()
                              ->getMock();
         $messageMock->expects($this->once())

@@ -1,7 +1,45 @@
-<?php namespace Stark\Http\Messages;
+<?php
 
-class Request
+namespace Stark\Http\Messages;
+
+use InvalidArgumentException;
+use Stark\Psr\Http\Message\RequestInterface;
+use Stark\Psr\Http\Message\UriInterface;
+
+class Request extends Message implements RequestInterface
 {
+    protected $uri = false;
+
+    protected $method = '';
+
+    /**
+     * Valid method types.
+     *
+     * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+     *
+     * @var array
+     */
+    protected $valid_methods = ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'];
+
+    public function __construct(string $uri = '', $method = '')
+    {
+        parent::__construct();
+
+        if ($uri instanceof UriInterface) {
+            $this->uri = $uri;
+        } elseif ($uri) {
+            $this->uri = new Uri($uri);
+        }
+
+        if (!empty($method)) {
+            $this->checkIsAValidRequestMethod($method);
+            $this->method = $method;
+        } elseif (isset($_SERVER['REQUEST_METHOD'])) {
+            $this->checkIsAValidRequestMethod($_SERVER['REQUEST_METHOD']);
+            $this->method = strtoupper($_SERVER['REQUEST_METHOD']);
+        }
+    }
+
     /**
      * Retrieves the message's request target.
      *
@@ -20,7 +58,11 @@ class Request
      */
     public function getRequestTarget(): string
     {
-        return "/";
+        if ($this->uri) {
+            return (string) $this->uri;
+        }
+
+        return '/';
     }
 
     /**
@@ -37,12 +79,14 @@ class Request
      *
      * @link http://tools.ietf.org/html/rfc7230#section-2.7 (for the various
      *     request-target forms allowed in request messages)
+     *
      * @param mixed $requestTarget
+     *
      * @return self
      */
     public function withRequestTarget($requestTarget): RequestInterface
     {
-        return $this;
+        return new self($requestTarget);
     }
 
     /**
@@ -52,6 +96,7 @@ class Request
      */
     public function getMethod(): string
     {
+        return $this->method;
     }
 
     /**
@@ -66,12 +111,16 @@ class Request
      * changed request method.
      *
      * @param string $method Case-sensitive method.
+     *
      * @return self
+     *
      * @throws \InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method): RequestInterface
     {
-        return $this;
+        $this->checkIsAValidRequestMethod($method);
+
+        return new self($this->uri, $method);
     }
 
     /**
@@ -80,12 +129,13 @@ class Request
      * This method MUST return a UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
+     *
      * @return UriInterface Returns a UriInterface instance
-     *     representing the URI of the request.
+     *                      representing the URI of the request.
      */
     public function getUri(): UriInterface
     {
-        return UriInterface;
+        return $this->uri;
     }
 
     /**
@@ -114,11 +164,33 @@ class Request
      * new UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri New request URI to use.
-     * @param bool $preserveHost Preserve the original state of the Host header.
+     *
+     * @param UriInterface $uri          New request URI to use.
+     * @param bool         $preserveHost Preserve the original state of the Host header.
+     *
      * @return self
      */
     public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
+        $new_request = new self($uri);
+
+        if ($this->hasHeader('host') and $preserveHost) {
+        }
+
+        return $new_request;
+    }
+
+    /**
+     * Checks that the method specified is Valid.
+     *
+     * @param string $method An HTTP method
+     *
+     * @throws \InvalidArgumentException for invalid HTTP methods
+     */
+    protected function checkIsAValidRequestMethod(string $method)
+    {
+        if (!array_search(strtoupper($method), $this->valid_methods)) {
+            throw new InvalidArgumentException('An invalid HTTP method was specified, '.$method);
+        }
     }
 }

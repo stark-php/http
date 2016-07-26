@@ -11,7 +11,7 @@ class Uri implements UriInterface
      *
      * @var string
      */
-    protected $scheme = 'http';
+    protected $scheme = '';
 
     /**
      * Username used to access the uri.
@@ -78,20 +78,21 @@ class Uri implements UriInterface
         } else {
             $uri = $uri[0];
 
-            preg_match('/^([^:]*)/', $uri, $scheme);
+            preg_match('/^(https?):\/\//', $uri, $scheme);
             preg_match('/^[^:]*:\/\/([^:]*)[@|:]/', $uri, $username);
             preg_match('/^[^:]*:\/\/[^:]*:([^@]*)@/', $uri, $password);
             preg_match('/^[^:]*:\/\/([^@]*@)?([^:|\/|?|#]*)/', $uri, $host);
             preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*:?([0-9]*)?\//', $uri, $port);
-            preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^?|#]*)?/', $uri, $path);
+            preg_match('/(^[^:]*:\/\/)?([^@]*@)?([^:|\/]*)?([:0-9]*)?(\/[^?|#]*)?/', $uri, $path);
             preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^?]*)?\?([^#|$]*)/', $uri, $query);
             preg_match('/^[^:]*:\/\/([^@]*@)?[^:|\/]*([:0-9]*)?(\/[^#]*)?\#([^?|$]*)/', $uri, $fragment);
 
-            $this->scheme = $scheme[1];
-            $this->host = $host[2];
+            if (isset($scheme[1])) {
+                $this->scheme = $scheme[1];
+            }
 
-            if (isset($path[3])) {
-                $this->path = $path[3];
+            if (isset($host[2])) {
+                $this->host = $host[2];
             }
 
             if (isset($username[1])) {
@@ -104,6 +105,10 @@ class Uri implements UriInterface
 
             if (isset($port[2]) and !empty($port[2])) {
                 $this->port = $port[2];
+            }
+
+            if (isset($path[5])) {
+                $this->path = $path[5];
             }
 
             if (isset($query[4])) {
@@ -334,9 +339,9 @@ class Uri implements UriInterface
      *
      * @param string $scheme The scheme to use with the new instance.
      *
-     * @return self A new instance with the specified scheme.
-     *
      * @throws \InvalidArgumentException for invalid or unsupported schemes.
+     *
+     * @return self A new instance with the specified scheme.
      */
     public function withScheme(string $scheme): UriInterface
     {
@@ -381,9 +386,9 @@ class Uri implements UriInterface
      *
      * @param string $host The hostname to use with the new instance.
      *
-     * @return self A new instance with the specified host.
-     *
      * @throws \InvalidArgumentException for invalid hostnames.
+     *
+     * @return self A new instance with the specified host.
      */
     public function withHost(string $host): UriInterface
     {
@@ -405,9 +410,9 @@ class Uri implements UriInterface
      * @param null|int $port The port to use with the new instance; a null value
      *                       removes the port information.
      *
-     * @return self A new instance with the specified port.
-     *
      * @throws \InvalidArgumentException for invalid ports.
+     *
+     * @return self A new instance with the specified port.
      */
     public function withPort($port = null): UriInterface
     {
@@ -434,9 +439,9 @@ class Uri implements UriInterface
      *
      * @param string $path The path to use with the new instance.
      *
-     * @return self A new instance with the specified path.
-     *
      * @throws \InvalidArgumentException for invalid paths.
+     *
+     * @return self A new instance with the specified path.
      */
     public function withPath(string $path): UriInterface
     {
@@ -456,9 +461,9 @@ class Uri implements UriInterface
      *
      * @param string $query The query string to use with the new instance.
      *
-     * @return self A new instance with the specified query string.
-     *
      * @throws \InvalidArgumentException for invalid query strings.
+     *
+     * @return self A new instance with the specified query string.
      */
     public function withQuery(string $query): UriInterface
     {
@@ -566,10 +571,10 @@ class Uri implements UriInterface
 
         if (is_array($property)) {
             foreach ($property as $index => $single) {
-                $values[array_search($single, $indexes)] = $value[$index];
+                $values[array_search($single, $indexes, true)] = $value[$index];
             }
         } else {
-            $values[array_search($property, $indexes)] = $value;
+            $values[array_search($property, $indexes, true)] = $value;
         }
 
         return new self(...$values);

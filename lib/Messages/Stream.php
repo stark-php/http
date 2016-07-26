@@ -10,21 +10,21 @@ class Stream implements StreamInterface
     /**
      * The result of fopen.
      *
-     * @type string
+     * @var string
      */
     protected $file;
 
     /**
      * Contents of the stream.
      *
-     * @type string
+     * @var string
      */
     protected $stream_contents;
 
     /**
      * Holds the metadata for the file.
      *
-     * @type array
+     * @var array
      */
     protected $metadata = [];
 
@@ -35,7 +35,7 @@ class Stream implements StreamInterface
                 $type = 'r+';
                 break;
 
-            case is_readable($filepath) and ! is_writable($filepath):
+            case is_readable($filepath) and !is_writable($filepath):
                 $type = 'r';
                 break;
 
@@ -110,7 +110,7 @@ class Stream implements StreamInterface
 
     public function seek(int $offset, $whence = SEEK_SET)
     {
-        if ( ! $this->isSeekable()) {
+        if (!$this->isSeekable()) {
             throw new RuntimeException('You cannot seek this stream');
         }
 
@@ -161,7 +161,7 @@ class Stream implements StreamInterface
 
     public function getContents(): string
     {
-        if ( ! $this->stream_contents) {
+        if (!$this->stream_contents) {
             $this->stream_contents = stream_get_contents($this->file);
         }
 

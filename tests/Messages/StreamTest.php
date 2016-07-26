@@ -12,8 +12,8 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $streamCastToString = (string) $stream;
         $streamBody         = $stream->getContents();
 
-        $this->assertSame($licenseBody, $streamCastToString);
-        $this->assertSame($licenseBody, $streamBody);
+        $this->assertEquals($licenseBody, $streamCastToString);
+        $this->assertEquals($licenseBody, $streamBody);
     }
 
     public function testWeCanGetThePositionOfAStream()
@@ -22,7 +22,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $position = $stream->tell();
 
-        $this->assertSame(0, $position);
+        $this->assertEquals(0, $position);
     }
 
     public function testWeCanGetTheSizeOfTheStream()
@@ -35,9 +35,9 @@ class StreamTest extends PHPUnit_Framework_TestCase
         $streamWithLengthSize        = $streamWithLength->getSize();
         $streamThatIsntWriteableSize = $streamThatIsntWriteable->getSize();
 
-        $this->assertSame(null, $streamWithNoLengthSize);
-        $this->assertSame(52217, $streamWithLengthSize);
-        $this->assertSame(1076, $streamThatIsntWriteableSize);
+        $this->assertEquals(null, $streamWithNoLengthSize);
+        $this->assertEquals(52217, $streamWithLengthSize);
+        $this->assertEquals(1076, $streamThatIsntWriteableSize);
     }
 
     public function testWeCanFindOutIfWeAreAtTheEndOfAStream()
@@ -55,7 +55,7 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $fiveBytesOfInformation = $stream->read(5);
 
-        $this->assertSame('The M', $fiveBytesOfInformation);
+        $this->assertEquals('The M', $fiveBytesOfInformation);
     }
 
     public function testCheckIfAStreamIsWriteable()
@@ -107,22 +107,22 @@ class StreamTest extends PHPUnit_Framework_TestCase
     {
         $stream = new Stream('LICENSE');
 
-        $this->assertSame(0, $stream->tell());
+        $this->assertEquals(0, $stream->tell());
 
         $stream->seek(10);
 
-        $this->assertSame(10, $stream->tell());
+        $this->assertEquals(10, $stream->tell());
 
         $stream->rewind();
 
-        $this->assertSame(0, $stream->tell());
+        $this->assertEquals(0, $stream->tell());
     }
 
     public function testWeCanGetAllMetadata()
     {
         $stream = new Stream('LICENSE');
 
-        $this->assertSame([
+        $this->assertEquals([
             'timed_out'    => false,
             'blocked'      => true,
             'eof'          => false,
@@ -142,13 +142,13 @@ class StreamTest extends PHPUnit_Framework_TestCase
 
         $stream = new Stream('test.file');
 
-        $this->assertSame('', $stream->getContents());
+        $this->assertEquals('', $stream->getContents());
 
         $stream->write('Hello world');
 
         $stream->rewind();
 
-        $this->assertSame('Hello world', $stream->read(11));
+        $this->assertEquals('Hello world', $stream->read(11));
 
         unlink('test.file');
     }

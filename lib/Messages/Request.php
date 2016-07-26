@@ -17,11 +17,11 @@ class Request extends Message implements RequestInterface
      *
      * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
      *
-     * @var array
+     * @type array
      */
     protected $valid_methods = ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT'];
 
-    public function __construct(string $uri = '', $method = '')
+    public function __construct($uri = '', $method = '', $protocol_version = false, $headers = false, StreamInterface $body = null)
     {
         parent::__construct();
 
@@ -31,7 +31,7 @@ class Request extends Message implements RequestInterface
             $this->uri = new Uri($uri);
         }
 
-        if (!empty($method)) {
+        if ( ! empty($method)) {
             $this->checkIsAValidRequestMethod($method);
             $this->method = $method;
         } elseif (isset($_SERVER['REQUEST_METHOD'])) {
@@ -112,9 +112,9 @@ class Request extends Message implements RequestInterface
      *
      * @param string $method Case-sensitive method.
      *
-     * @return self
-     *
      * @throws \InvalidArgumentException for invalid HTTP methods.
+     *
+     * @return self
      */
     public function withMethod($method): RequestInterface
     {
@@ -169,13 +169,12 @@ class Request extends Message implements RequestInterface
      * @param bool         $preserveHost Preserve the original state of the Host header.
      *
      * @return self
+     *
+     * @todo Implement preserve host
      */
     public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
-        $new_request = new self($uri);
-
-        if ($this->hasHeader('host') and $preserveHost) {
-        }
+        $new_request = new self($uri, $this->method, $this->protocol_version, $this->headers, $this->body);
 
         return $new_request;
     }
@@ -189,8 +188,8 @@ class Request extends Message implements RequestInterface
      */
     protected function checkIsAValidRequestMethod(string $method)
     {
-        if (!array_search(strtoupper($method), $this->valid_methods)) {
-            throw new InvalidArgumentException('An invalid HTTP method was specified, '.$method);
+        if ( ! array_search(strtoupper($method), $this->valid_methods, true)) {
+            throw new InvalidArgumentException('An invalid HTTP method was specified, ' . $method);
         }
     }
 }

@@ -4,7 +4,6 @@ use Stark\Http\Messages\Uri;
 
 class UriTest extends PHPUnit_Framework_TestCase
 {
-
     public function testWeCanGetTheSchemeOfTheUri()
     {
         $uri = new Uri('https', '', '', 'google.com', 80, '/', '', '');
@@ -14,8 +13,8 @@ class UriTest extends PHPUnit_Framework_TestCase
 
     public function testWeCanGetTheAuthorityOfTheUri()
     {
-        $uri_host_only = new Uri('http', '', '', 'google.com', 80, '/', '', '');
-        $uri_host_and_port = new Uri('http', '', '', 'google.com', 8080, '/', '', '');
+        $uri_host_only                       = new Uri('http', '', '', 'google.com', 80, '/', '', '');
+        $uri_host_and_port                   = new Uri('http', '', '', 'google.com', 8080, '/', '', '');
         $uri_host_port_username_and_password = new Uri('http', 'user', 'password', 'google.com', 80, '/', '', '');
 
         $this->assertEquals('google.com', $uri_host_only->getAuthority());
@@ -58,7 +57,7 @@ class UriTest extends PHPUnit_Framework_TestCase
         $uri = new Uri('http', '', '', 'google.com', 80, 'asdf', 'foo=bar', 'fragment');
 
         $new_instance_without_password = $uri->withUserInfo('user');
-        $new_instance_with_password = $uri->withUserInfo('user', 'password');
+        $new_instance_with_password    = $uri->withUserInfo('user', 'password');
 
         $this->assertEquals('user', $new_instance_without_password->getUserInfo());
         $this->assertEquals('user:password', $new_instance_with_password->getUserInfo());
@@ -77,11 +76,11 @@ class UriTest extends PHPUnit_Framework_TestCase
     {
         $uri = new Uri('http', '', '', 'google.com', 80, '/', '', 'fragment');
 
-        $new_instance = $uri->withPort(8080);
-        $new_instance_with_no_port = $uri->withPort(NULL);
+        $new_instance              = $uri->withPort(8080);
+        $new_instance_with_no_port = $uri->withPort(null);
 
-        $this->assertEquals(8080, $new_instance->getPort());
-        $this->assertEquals('', $new_instance_with_no_port->getPort());
+        $this->assertEquals(8080, intval($new_instance->getPort()));
+        $this->assertEquals(null, $new_instance_with_no_port->getPort());
     }
 
     public function testWeCanCreateANewInstanceWithADifferentPath()
@@ -112,9 +111,8 @@ class UriTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Testing Uri combinations
+     * Testing Uri combinations.
      */
-
     public function testWeCanCreateAUriFromAStringInItsLongestForm()
     {
         $uri = new Uri('http://foo:bar@google.com:8080/baz/asdf/?foo=bar#fragment');
@@ -237,6 +235,20 @@ class UriTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('google.com', $uri->getHost());
         $this->assertEquals(null, $uri->getPort());
         $this->assertEquals('', $uri->getPath());
+        $this->assertEquals('', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testWeCanCreateARelativeUrl()
+    {
+        $uri = new Uri('/foo/bar');
+
+        $this->assertEquals('', $uri->getScheme());
+        $this->assertEquals('', $uri->getAuthority());
+        $this->assertEquals('', $uri->getUserInfo());
+        $this->assertEquals('', $uri->getHost());
+        $this->assertEquals(null, $uri->getPort());
+        $this->assertEquals('/foo/bar', $uri->getPath());
         $this->assertEquals('', $uri->getQuery());
         $this->assertEquals('', $uri->getFragment());
     }

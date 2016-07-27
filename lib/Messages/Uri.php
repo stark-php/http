@@ -9,56 +9,56 @@ class Uri implements UriInterface
     /**
      * The scheme used with the uri.
      *
-     * @var string
+     * @type string
      */
     protected $scheme = '';
 
     /**
      * Username used to access the uri.
      *
-     * @var string
+     * @type string
      */
     protected $username = '';
 
     /**
      * Password used to access the uri.
      *
-     * @var string
+     * @type string
      */
     protected $password = '';
 
     /**
      * Hostname for the uri.
      *
-     * @var string
+     * @type string
      */
     protected $host = '';
 
     /**
      * Port for the uri.
      *
-     * @var int|null
+     * @type int|null
      */
     protected $port = null;
 
     /**
      * The path to access on the host of the uri.
      *
-     * @var string
+     * @type string
      */
     protected $path = '';
 
     /**
      * The query string to use on the uri.
      *
-     * @var string
+     * @type string
      */
     protected $query = '';
 
     /**
      * The fragment to use when accessing the uri.
      *
-     * @var string
+     * @type string
      */
     protected $fragment = '';
 
@@ -66,13 +66,13 @@ class Uri implements UriInterface
     {
         // We assume that we have all the properties passed in individually
         if (is_array($uri) and count($uri) > 1) {
-            $this->scheme = $uri[0];
+            $this->scheme   = $uri[0];
             $this->username = $uri[1];
             $this->password = $uri[2];
-            $this->host = $uri[3];
-            $this->port = $uri[4];
-            $this->path = $uri[5];
-            $this->query = $uri[6];
+            $this->host     = $uri[3];
+            $this->port     = $uri[4];
+            $this->path     = $uri[5];
+            $this->query    = $uri[6];
             $this->fragment = $uri[7];
         // If a uri is specified lets use that
         } else {
@@ -103,7 +103,7 @@ class Uri implements UriInterface
                 $this->password = $password[1];
             }
 
-            if (isset($port[2]) and !empty($port[2])) {
+            if (isset($port[2]) and ! empty($port[2])) {
                 $this->port = $port[2];
             }
 
@@ -163,15 +163,15 @@ class Uri implements UriInterface
     public function getAuthority(): string
     {
         if ($this->getUserInfo()) {
-            $user_info = $this->getUserInfo().'@';
+            $user_info = $this->getUserInfo() . '@';
         } else {
             $user_info = '';
         }
 
         if ($this->getPort() === null) {
-            return $user_info.$this->getHost();
+            return $user_info . $this->getHost();
         } else {
-            return $user_info.$this->getHost().':'.$this->port;
+            return $user_info . $this->getHost() . ':' . $this->port;
         }
     }
 
@@ -193,7 +193,7 @@ class Uri implements UriInterface
     public function getUserInfo(): string
     {
         if ($this->username !== '' and $this->password !== '') {
-            return $this->username.':'.$this->password;
+            return $this->username . ':' . $this->password;
         }
 
         // By default username is an empty string
@@ -366,11 +366,11 @@ class Uri implements UriInterface
     public function withUserInfo(string $user, $password = null): UriInterface
     {
         $new_properties = ['username'];
-        $new_values = [$user];
+        $new_values     = [$user];
 
         if ($password !== null) {
             $new_properties[] = 'password';
-            $new_values[] = $password;
+            $new_values[]     = $password;
         }
 
         return $this->createNewInstanceWith($new_properties, $new_values);
@@ -519,11 +519,11 @@ class Uri implements UriInterface
         $string = '';
 
         if ($scheme = $this->scheme) {
-            $string .= $scheme.':';
+            $string .= $scheme . ':';
         }
 
         if ($authority = $this->getAuthority()) {
-            $string .= '//'.$authority;
+            $string .= '//' . $authority;
         }
 
         if ($path = $this->getPath()) {
@@ -535,11 +535,11 @@ class Uri implements UriInterface
         }
 
         if ($query = $this->getQuery()) {
-            $string .= '?'.$query;
+            $string .= '?' . $query;
         }
 
         if ($fragment = $this->getFragment()) {
-            $string .= '#'.$fragment;
+            $string .= '#' . $fragment;
         }
 
         return $string;
@@ -558,7 +558,7 @@ class Uri implements UriInterface
         $string = (string) $this;
 
         $indexes = ['scheme', 'username', 'password', 'host', 'port', 'path', 'query', 'fragment'];
-        $values = [
+        $values  = [
             $this->scheme,
             $this->username,
             $this->password,

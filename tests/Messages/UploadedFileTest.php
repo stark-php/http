@@ -1,16 +1,18 @@
 <?php
 
+use Stark\Http\Messages\UploadedFile;
+
 class UploadedFileTest extends PHPUnit_Framework_TestCase
 {
     public function testWeCanGetAStream()
     {
         $file = $this->createMockForFileUpload([
-        'name'     => 'foo.txt',
-        'type'     => 'text/plain',
-        'tmp_name' => 'LICENSE',
-        'error'    => 0,
-        'size'     => 100,
-    ]);
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => 'LICENSE',
+            'error'    => 0,
+            'size'     => 100,
+        ]);
 
         $this->assertEquals('The MIT License (MIT)', $file->getStream()->read(21));
     }
@@ -87,7 +89,91 @@ class UploadedFileTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('text/plain', $file->getClientMediaType());
     }
 
-    protected function createMockForFileUpload(array $file, bool $is_uploaded_file = true, $set_uploaded_file = null)
+    // Exception testing
+    public function testWeGetAnExceptionWhenWePassAnIncorrectFileReference()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $mock = $this->createMockForFileUpload('asdf');
+    }
+
+    public function testWeGetAnExceptionWhenTheDirectoryDoesntExist()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $file = $this->createMockForFileUpload([
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => '/tmp/foobar',
+            'error'    => 0,
+            'size'     => 100,
+        ]);
+
+        $file->moveTo('/asadfgaf/');
+    }
+
+    public function testWeCannotMoveAFileTwice()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $file = $this->createMockForFileUpload([
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => '/tmp/foobar',
+            'error'    => 0,
+            'size'     => 100,
+        ]);
+
+        $file->moveTo('build/');
+
+        $file->moveTo('build/logs');
+    }
+
+    public function testAnExceptionIsThrownWhenTryingToMoveAnInvalidFile()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $file = $this->createMockForFileUpload([
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => '/tmp/foobar',
+            'error'    => 0,
+            'size'     => 100,
+        ], false);
+
+        $file->moveTo('build/');
+    }
+
+    public function testAnExceptionIsThrownWhenThereIsNoErrorConstantProvided()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $_FILES['asdf'] = [
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => '/tmp/foobar',
+            'error'    => 0,
+            'size'     => 100,
+        ];
+
+        $file = $this->createMockForFileUpload('asdf', false);
+    }
+
+    public function testWeCannotMoveAFileThatHasntBeenUploaded()
+    {
+        $this->expectException(RuntimeException::class);
+        $file = new UploadedFile([
+            'name'     => 'foo.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => '/tmp/foobar',
+            'error'    => 0,
+            'size'     => 100,
+        ]);
+
+        $file->moveTo('build/');
+    }
+
+    protected function createMockForFileUpload($file, bool $is_uploaded_file = true, $set_uploaded_file = null)
     {
         $fileMock = $this->getMockBuilder('Stark\Http\Messages\UploadedFile')
             ->setMethods(['is_uploaded_file', 'set_uploaded_file'])

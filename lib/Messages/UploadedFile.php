@@ -27,18 +27,7 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException('Unable to get that uploaded file');
         }
 
-        if (isset($file_reference['error']) and is_array($file_reference['error'])) {
-            foreach ($file_reference['error'] as $key => $error) {
-                if ($error === UPLOAD_ERR_OK) {
-                    $this->tmp_name   = $file_reference['tmp_name'][$key];
-                    $this->name       = basename($file_reference['name'][$key]);
-                    $this->media_type = $file_reference['type'][$key];
-                    $this->size       = $file_reference['size'][$key];
-                }
-
-                $this->error = $error;
-            }
-        } elseif (isset($file_reference['error'])) {
+        if (isset($file_reference['error'])) {
             $error = $file_reference['error'];
 
             if ($error === UPLOAD_ERR_OK) {
@@ -166,11 +155,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getError(): int
     {
-        if (isset($this->error)) {
-            return $this->error;
-        }
-
-        return UPLOAD_ERR_OK;
+        return $this->error;
     }
 
     /**

@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stark-php/http-message.git",
-                "reference": "cf74be5745dc9abcca66ccacdb6e8f38195e39f2"
+                "reference": "aca84a917e0b087da029582a96b0321b96a901b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stark-php/http-message/zipball/cf74be5745dc9abcca66ccacdb6e8f38195e39f2",
-                "reference": "cf74be5745dc9abcca66ccacdb6e8f38195e39f2",
+                "url": "https://api.github.com/repos/stark-php/http-message/zipball/aca84a917e0b087da029582a96b0321b96a901b4",
+                "reference": "aca84a917e0b087da029582a96b0321b96a901b4",
                 "shasum": ""
             },
             "type": "library",
@@ -83,7 +83,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-07-27 09:28:44"
+            "time": "2016-07-27 10:13:38"
         }
     ],
     "packages-dev": [

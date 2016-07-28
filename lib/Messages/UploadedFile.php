@@ -213,35 +213,6 @@ class UploadedFile implements UploadedFileInterface
         return $this->media_type;
     }
 
-    protected function convertPHPSizeToBytes($s_size)
-    {
-        if (is_numeric($s_size)) {
-            return $s_size;
-        }
-        $s_suffix = substr($s_size, -1);
-        $i_value  = substr($s_size, 0, -1);
-        switch (strtoupper($s_suffix)) {
-        case 'P':
-            $i_value *= 1024;
-        case 'T':
-            $i_value *= 1024;
-        case 'G':
-            $i_value *= 1024;
-        case 'M':
-            $i_value *= 1024;
-        case 'K':
-            $i_value *= 1024;
-            break;
-        }
-
-        return $i_value;
-    }
-
-    protected function getMaximumFileUploadSize()
-    {
-        return min(convertPHPSizeToBytes(ini_get('post_max_size')), convertPHPSizeToBytes(ini_get('upload_max_filesize')));
-    }
-
     protected function is_uploaded_file()
     {
         return is_uploaded_file($this->tmp_name);

@@ -14,6 +14,7 @@
         }
     },
     "require": {
+        "php": "~7.0",
         "stark/contracts": "dev-master",
         "stark/http-message": "dev-master"
     },

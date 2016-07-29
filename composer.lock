@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "50db81d0996d9fdb1cc4f57dea39427b",
-    "content-hash": "c4b2fe2fcf20304217a5a4f45d23ae5d",
+    "hash": "a0742191f8a55699c56428813cef4ee7",
+    "content-hash": "2d8710401f4c99bf3422690864f27ec5",
     "packages": [
         {
             "name": "stark/contracts",
@@ -46,12 +46,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stark-php/http-message.git",
-                "reference": "aca84a917e0b087da029582a96b0321b96a901b4"
+                "reference": "75a3d68d64265a06971bb241b95f900a23b9d255"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stark-php/http-message/zipball/aca84a917e0b087da029582a96b0321b96a901b4",
-                "reference": "aca84a917e0b087da029582a96b0321b96a901b4",
+                "url": "https://api.github.com/repos/stark-php/http-message/zipball/75a3d68d64265a06971bb241b95f900a23b9d255",
+                "reference": "75a3d68d64265a06971bb241b95f900a23b9d255",
                 "shasum": ""
             },
             "type": "library",
@@ -83,7 +83,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-07-27 10:13:38"
+            "time": "2016-07-29 08:52:20"
         }
     ],
     "packages-dev": [
@@ -1908,6 +1908,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "~7.0"
+    },
     "platform-dev": []
 }
